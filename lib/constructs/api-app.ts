@@ -2,7 +2,8 @@ import { Duration, RemovalPolicy } from "aws-cdk-lib";
 import { Architecture, Runtime } from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Construct } from "constructs";
-import { LambdaIntegration, RestApi, Cors } from "aws-cdk-lib/aws-apigateway";
+// import { LambdaIntegration, RestApi, Cors } from "aws-cdk-lib/aws-apigateway";
+import * as apig from "aws-cdk-lib/aws-apigateway";
 
 export class APIApp extends Construct {
   public readonly apiUrl: string;
@@ -20,8 +21,9 @@ export class APIApp extends Construct {
     });
 
     // REST API
-    const api = new RestApi(this, "DemoAPI", {
+    const api = new apig.RestApi(this, "DemoAPI", {
       description: "example api gateway",
+      endpointTypes: [apig.EndpointType.REGIONAL],
       deployOptions: {
         stageName: "dev",
       },
@@ -37,7 +39,7 @@ export class APIApp extends Construct {
     const todoEndpoint = api.root.addResource("todos")
     todoEndpoint.addMethod(
       "GET",
-      new LambdaIntegration(demoFn, { proxy: true }) // AWSIntegration
+      new apig.LambdaIntegration(demoFn, { proxy: true }) // AWSIntegration
     );
 
     this.apiUrl = api.url;

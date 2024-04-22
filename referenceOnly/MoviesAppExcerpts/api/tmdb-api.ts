@@ -4,7 +4,7 @@ export const getTodos = () => {
   return fetch(`${APIConfig.API.endpoints[0].endpoint}todos`)
     .then((res) => res.json())
     .then((json) => {
-      return { json };
+      return  json ;
     });
 };
 
